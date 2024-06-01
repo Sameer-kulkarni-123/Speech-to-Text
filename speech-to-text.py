@@ -37,7 +37,6 @@ def output_text(text):
 
 
 # if __name__ == "__main__":
-a = 10
 while True:
     try:
         # Record the text from the microphone
