@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload History</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/history.css') }}" />
+</head>
+<body>
+<div id="historyContainer">
+    <h1>Upload History</h1>
+    <table border="1">
+        <tr>
+            <th>Filename</th>
+            <th>Transcript</th>
+            <th>Timestamp</th>
+        </tr>
+        {% for upload in upload_history %}
+        <tr>
+            <td>{{ upload[0] }}</td>
+            <td>{{ upload[1] }}</td>
+            <td>{{ upload[2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="{{ url_for('index') }}">Back to Upload</a>
+</div>
+
+</body>
+</html>
