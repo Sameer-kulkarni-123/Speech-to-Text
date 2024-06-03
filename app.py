@@ -1,29 +1,23 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import speech_recognition as sr
 from pydub import AudioSegment
 import io
 from datetime import datetime
 import sqlite3
+import os
 
 app = Flask(__name__)
 
-def insert_upload(filename, transcript, timestamp):
-    conn = sqlite3.connect('uploads.db')
-    cursor = conn.cursor()
-    cursor.execute('''
-        INSERT INTO uploads (filename, transcript, timestamp)
-        VALUES (?, ?, ?)
-    ''', (filename, transcript, timestamp))
-    conn.commit()
-    conn.close()
+UPLOAD_FOLDER = 'uploads'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
-def get_all_uploads():
-    conn = sqlite3.connect('uploads.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT filename, transcript, timestamp FROM uploads')
-    uploads = cursor.fetchall()
-    conn.close()
-    return uploads
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def get_db_connection():
+    conn = sqlite3.connect('upload_history.db')
+    conn.row_factory = sqlite3.Row
+    return conn
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -39,8 +33,12 @@ def index():
             return redirect(request.url)
 
         if file:
+            # Save the uploaded file to the upload folder
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            file.save(filepath)
+
             # Convert the uploaded MP3 file to WAV
-            audio = AudioSegment.from_file(file, format="mp3")
+            audio = AudioSegment.from_file(filepath, format="mp3")
             wav_io = io.BytesIO()
             audio.export(wav_io, format="wav")
             wav_io.seek(0)
@@ -53,15 +51,26 @@ def index():
             transcript = recognizer.recognize_google(data, key=None)
 
             # Save the file details to the database
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            insert_upload(file.filename, transcript, timestamp)
+            conn = get_db_connection()
+            conn.execute(
+                'INSERT INTO uploads (filename, transcript, timestamp, filepath) VALUES (?, ?, ?, ?)',
+                (file.filename, transcript, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), filepath)
+            )
+            conn.commit()
+            conn.close()
 
     return render_template('index.html', transcript=transcript)
 
 @app.route("/history")
 def history():
-    upload_history = get_all_uploads()
-    return render_template('history.html', upload_history=upload_history)
+    conn = get_db_connection()
+    uploads = conn.execute('SELECT * FROM uploads').fetchall()
+    conn.close()
+    return render_template('history.html', uploads=uploads)
+
+@app.route("/uploads/<filename>")
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 if __name__ == "__main__":
     app.run(debug=True, threaded=True)

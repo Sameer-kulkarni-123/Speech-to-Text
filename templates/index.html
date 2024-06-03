@@ -7,23 +7,37 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}" />
 </head>
 <body>
-<div id="speechContainer">
-    <h1>Upload new File</h1>
-    <form method="post" enctype="multipart/form-data">
-        <input type="file" name="file"/>
-        <br>
-        <input type="submit" id="submitButton" value="Transcribe"/>
-    </form>
+<header>
+    <div id="headerContainer">
+        <h1>Speech to Text Transcriber</h1>
+        <a href="{{ url_for('history') }}" class="history-link">View Upload History</a>
+    </div>
+</header>
+<div id="container">
+    <div id="speechContainer">
+        <h1>Upload new File</h1>
+        <form method="post" enctype="multipart/form-data">
+            <label for="file-upload" class="custom-file-upload">
+                <span class="shadow"></span>
+                <span class="edge"></span>
+                <span class="front">Choose File</span>
+            </label>
+            <input id="file-upload" type="file" name="file"/>
+            <br>
+            <button type="submit">
+                <span class="shadow"></span>
+                <span class="edge"></span>
+                <span class="front">Transcribe</span>
+            </button>
+        </form>
 
-    {% if transcript != "" %}
-        <div id="speechTranscriptContainer">
-            <h1>Transcript</h1>
-            <p id="speechText">{{ transcript }}</p>
-        </div>
-    {% endif %}
-    <br>
-    <a href="{{ url_for('history') }}">View Upload History</a>
+        {% if transcript != "" %}
+            <div id="speechTranscriptContainer">
+                <h1>Transcript</h1>
+                <p id="speechText">{{ transcript }}</p>
+            </div>
+        {% endif %}
+    </div>
 </div>
-
 </body>
 </html>
