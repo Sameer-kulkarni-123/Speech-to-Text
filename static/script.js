@@ -1,3 +1,6 @@
+
+
+
 let mediaRecorder;
 let audioChunks = [];
 
@@ -32,7 +35,6 @@ function stopRecording() {
             console.error('Error:', error);
         });
 
-        // Reset audioChunks array
         audioChunks = [];
     };
 }
