@@ -2,12 +2,12 @@ body {
     font-family: 'Lato', sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(135deg, #ff7e5f, #feb47b);
-    color: #fff;
+    background: url('1.png') center center no-repeat fixed; 
+    color: #fff; 
 }
 
 header {
-    background-color: rgba(0, 0, 0, 0.8); 
+    background-color: rgba(0, 0, 0, 0.8);
     padding: 20px 0;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3); 
     position: fixed;
@@ -53,7 +53,6 @@ header h1 {
     padding-top: 50px; 
 }
 
-
 #speechContainer {
     max-width: 600px; 
     background-color: rgba(255, 255, 255, 0.9); 
@@ -61,8 +60,8 @@ header h1 {
     border-radius: 15px;
     box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3); 
     text-align: center; 
+    
 }
-
 
 h1 {
     font-size: 28px; 
@@ -243,7 +242,7 @@ button:focus:not(:focus-visible) {
 
 #speechText {
     font-size: 18px; 
-    color: #333;
+    color: #333; 
     background-color: #f0f0f0; 
     padding: 20px;
     border-radius: 10px;

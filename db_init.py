@@ -15,5 +15,5 @@ def create_table():
     conn.commit()
     conn.close()
 
-if __name__ == "_main_":
+if __name__ == "__main__":
     create_table()
